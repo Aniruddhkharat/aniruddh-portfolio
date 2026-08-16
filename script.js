@@ -1,10 +1,15 @@
+// =====================================================
+// PIXLEORA - MAIN JAVASCRIPT
+// =====================================================
+
+
 // ================= CURRENT YEAR =================
 
 const footerText = document.querySelector("footer p");
 
 if (footerText) {
     footerText.innerHTML =
-        `© ${new Date().getFullYear()} Aniruddh Kharat. All rights reserved.`;
+        `© ${new Date().getFullYear()} Pixleora. All rights reserved.`;
 }
 
 
@@ -12,24 +17,29 @@ if (footerText) {
 
 const navbar = document.querySelector(".navbar");
 
-window.addEventListener("scroll", () => {
+if (navbar) {
+    window.addEventListener("scroll", () => {
 
-    if (window.scrollY > 20) {
-        navbar.style.boxShadow =
-            "0 5px 20px rgba(0, 0, 0, 0.05)";
-    } else {
-        navbar.style.boxShadow = "none";
-    }
+        if (window.scrollY > 20) {
+            navbar.style.boxShadow =
+                "0 5px 20px rgba(0, 0, 0, 0.05)";
+        } else {
+            navbar.style.boxShadow = "none";
+        }
 
-});
+    });
+}
 
-// ================= CLIENT FORM =================
 
-// ================= CLIENT FORM =================
+// =====================================================
+// CLIENT FORM → GOOGLE SHEETS
+// =====================================================
 
 const clientForm = document.getElementById("clientForm");
 const formStatus = document.getElementById("formStatus");
 
+
+// YOUR GOOGLE APPS SCRIPT WEB APP URL
 const GOOGLE_SHEET_URL =
     "https://script.google.com/macros/s/AKfycbxSaHiTqLrn-Sc3X9vjQ-PjPCk20CqhcH65C8w4VyTMVPqzTWhLrGwApdCo-rXwR0nI/exec";
 
@@ -43,31 +53,40 @@ if (clientForm) {
         const submitButton =
             clientForm.querySelector(".form-btn");
 
-        submitButton.disabled = true;
-        submitButton.textContent = "Sending...";
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Sending...";
+        }
 
+
+        // Collect form information
         const formData = {
 
-            name: document.getElementById("name").value,
+            name:
+                document.getElementById("name")?.value || "",
 
             business:
-                document.getElementById("business").value,
+                document.getElementById("business")?.value || "",
 
             email:
-                document.getElementById("email").value,
+                document.getElementById("email")?.value || "",
 
             phone:
-                document.getElementById("phone").value,
+                document.getElementById("phone")?.value || "",
 
             service:
-                document.getElementById("service").value,
+                document.getElementById("service")?.value || "",
 
             budget:
-                document.getElementById("budget").value,
+                document.getElementById("budget")?.value || "",
 
             message:
-                document.getElementById("message").value
+                document.getElementById("message")?.value || ""
+
         };
+
+
+        console.log("Sending enquiry:", formData);
 
 
         try {
@@ -79,55 +98,116 @@ if (clientForm) {
                 mode: "no-cors",
 
                 headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
+                    "Content-Type":
+                        "text/plain;charset=utf-8"
                 },
 
                 body: JSON.stringify(formData)
 
             });
 
-            formStatus.textContent =
-                "✓ Thanks! Your enquiry has been received.";
+
+            // IMPORTANT:
+            // no-cors doesn't allow JavaScript to read
+            // the Google response, but the request is sent.
+
+            if (formStatus) {
+
+                formStatus.textContent =
+                    "✓ Thanks! Your enquiry has been received.";
+
+                formStatus.style.color = "#2563eb";
+
+            }
+
 
             clientForm.reset();
 
-            submitButton.textContent =
-                "Enquiry Sent ✓";
+
+            if (submitButton) {
+
+                submitButton.textContent =
+                    "Enquiry Sent ✓";
+
+            }
+
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Google Sheet submission error:",
+                error
+            );
 
-            formStatus.textContent =
-                "Something went wrong. Please try again.";
 
-            submitButton.textContent =
-                "Send Project Enquiry →";
+            if (formStatus) {
+
+                formStatus.textContent =
+                    "Something went wrong. Please try again.";
+
+                formStatus.style.color = "#dc2626";
+
+            }
+
+
+            if (submitButton) {
+
+                submitButton.textContent =
+                    "Send Project Enquiry →";
+
+            }
+
         }
 
-        submitButton.disabled = false;
+
+        // Enable button again
+        setTimeout(() => {
+
+            if (submitButton) {
+
+                submitButton.disabled = false;
+
+                submitButton.textContent =
+                    "Send Project Enquiry →";
+
+            }
+
+        }, 3000);
 
     });
 
 }
 
-// ================= CONTACT POPUP =================
+
+// =====================================================
+// CONTACT POPUP
+// =====================================================
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const openContact = document.getElementById("openContact");
-    const closeContact = document.getElementById("closeContact");
-    const contactOverlay = document.getElementById("contactOverlay");
+    const openContact =
+        document.getElementById("openContact");
+
+    const closeContact =
+        document.getElementById("closeContact");
+
+    const contactOverlay =
+        document.getElementById("contactOverlay");
 
 
-    // Check that elements exist
     if (!openContact || !closeContact || !contactOverlay) {
-        console.error("Contact popup elements not found.");
+
+        console.log(
+            "Contact popup elements not found."
+        );
+
         return;
+
     }
 
 
-    // OPEN
+    // OPEN POPUP
+
     openContact.addEventListener("click", function () {
 
         contactOverlay.classList.add("active");
@@ -138,6 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // CLOSE BUTTON
+
     closeContact.addEventListener("click", function () {
 
         contactOverlay.classList.remove("active");
@@ -148,6 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // CLICK OUTSIDE CARD
+
     contactOverlay.addEventListener("click", function (event) {
 
         if (event.target === contactOverlay) {
@@ -162,6 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ESC KEY
+
     document.addEventListener("keydown", function (event) {
 
         if (event.key === "Escape") {
@@ -171,6 +254,53 @@ document.addEventListener("DOMContentLoaded", function () {
             document.body.style.overflow = "";
 
         }
+
+    });
+
+});
+
+
+// =====================================================
+// MOBILE HAMBURGER MENU
+// =====================================================
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const hamburger =
+        document.querySelector(".hamburger");
+
+    const navLinks =
+        document.querySelector(".nav-links");
+
+
+    if (!hamburger || !navLinks) {
+        return;
+    }
+
+
+    hamburger.addEventListener("click", function () {
+
+        hamburger.classList.toggle("active");
+
+        navLinks.classList.toggle("active");
+
+    });
+
+
+    // Close menu after clicking a link
+
+    const links =
+        navLinks.querySelectorAll("a");
+
+    links.forEach(link => {
+
+        link.addEventListener("click", function () {
+
+            hamburger.classList.remove("active");
+
+            navLinks.classList.remove("active");
+
+        });
 
     });
 
