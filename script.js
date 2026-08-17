@@ -259,49 +259,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-
-// =====================================================
-// MOBILE HAMBURGER MENU
-// =====================================================
+// ================= MOBILE HAMBURGER MENU =================
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    const hamburger =
-        document.querySelector(".hamburger");
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.querySelector(".nav-links");
 
-    const navLinks =
-        document.querySelector(".nav-links");
-
-
-    if (!hamburger || !navLinks) {
-        return;
-    }
-
+    if (!hamburger || !navLinks) return;
 
     hamburger.addEventListener("click", function () {
-
         hamburger.classList.toggle("active");
-
-        navLinks.classList.toggle("active");
-
+        navLinks.classList.toggle("show");
     });
 
-
-    // Close menu after clicking a link
-
-    const links =
-        navLinks.querySelectorAll("a");
-
-    links.forEach(link => {
-
+    navLinks.querySelectorAll("a").forEach(function (link) {
         link.addEventListener("click", function () {
-
             hamburger.classList.remove("active");
-
-            navLinks.classList.remove("active");
-
+            navLinks.classList.remove("show");
         });
-
     });
 
 });
+
